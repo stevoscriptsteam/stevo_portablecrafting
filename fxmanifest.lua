@@ -3,7 +3,7 @@ game 'gta5'
 
 
 author 'StevoScripts | steve'
-description 'Portable Crafting system for ox_inventory'
+description 'Advanced Portable Crafting System with props, blueprints and more!'
 version '1.0.0'
 
 shared_scripts {
