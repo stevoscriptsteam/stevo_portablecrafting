@@ -79,6 +79,10 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, itemN
     return item.name
 end)
 
+stevo_lib.RegisterUsableItem(Config.craftingTable.item, function(source)
+    TriggerClientEvent('stevo_portable_crafting', source)
+end)
+
 CreateThread(function()
     if Config.saveToDatabase then 
         local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM stevo_portable_crafting')

@@ -284,7 +284,7 @@ function on_player_loaded()
     end
 end
 
-exports('usetable', function()
+RegisterNetEvent('stevo_portable_crafting', function()
     if not IsPedInAnyVehicle(PlayerPedId(), true) then
         placeTable()
     else
