@@ -20,6 +20,10 @@ server_scripts {
 	'resource/server.lua'
 }
 
+files {
+  'locales/*.json'
+}
+
 dependencies {
   'ox_lib',
   'oxmysql',

@@ -1,33 +1,46 @@
-local Config = lib.require('config')
+local config = lib.require('config')
 local stevo_lib = exports['stevo_lib']:import()
 local CRAFTING_TABLES = {}
 
+lib.locale()
+
 local function saveTableToDatabase(table)
-    if Config.saveToDatabase then 
-        MySQL.query('REPLACE INTO `stevo_portable_crafting` (tableid, owner, name, coords, heading) VALUES (?, ?, ?, ?, ?)', {
-            table.id, table.owner, table.name, json.encode(table.coords), table.heading
+    if config.saveToDatabase then 
+        MySQL.query('REPLACE INTO `stevo_portable_crafting` (tableid, tabletype, owner, name, coords, heading) VALUES (?, ?, ?, ?, ?, ?)', {
+            table.id,table.type, table.owner, table.name, json.encode(table.coords), table.heading
         })
     end
 end
 
 local function deleteTableFromDatabase(tableId)
-    if Config.saveToDatabase then 
+    if config.saveToDatabase then 
         MySQL.query('DELETE FROM `stevo_portable_crafting` WHERE tableid = ?', { tableId })
     end
 end
 
-lib.callback.register('stevo_portablecrafting:createTable', function(source, coords, heading)
+local function generateUniqueTableId()
+    local id
+    repeat
+        id = math.random(100000, 999999)
+    until not CRAFTING_TABLES[id] 
+    return id
+end
+
+
+
+lib.callback.register('stevo_portablecrafting:createTable', function(source, coords, heading, tabletype)
     local identifier = stevo_lib.GetIdentifier(source)
     local name = stevo_lib.GetName(source)
 
-    stevo_lib.RemoveItem(source, Config.craftingTable.item, 1)
+    stevo_lib.RemoveItem(source, tabletype, 1)
 
     local table = {
-        name = name.. "'s Crafting Table",
+        name = locale('name_crafting_table', name),
+        type = tabletype,
         owner = identifier,
         coords = coords,
         heading = heading,
-        id = math.random(100000, 999999),
+        id = generateUniqueTableId(),
     }
 
     CRAFTING_TABLES[table.id] = table
@@ -36,12 +49,12 @@ lib.callback.register('stevo_portablecrafting:createTable', function(source, coo
     TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'create', CRAFTING_TABLES, table)
 end)
 
-lib.callback.register('stevo_portablecrafting:pickupTable', function(source, tableId)
-    if CRAFTING_TABLES[tableId] ~= nil then 
-        stevo_lib.AddItem(source, Config.craftingTable.item, 1)
-        deleteTableFromDatabase(tableId)
-        CRAFTING_TABLES[tableId] = nil
-        TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'delete', CRAFTING_TABLES, tableId)
+lib.callback.register('stevo_portablecrafting:pickupTable', function(source, table)
+    if CRAFTING_TABLES[table.id] ~= nil then 
+        stevo_lib.AddItem(source, table.type, 1)
+        deleteTableFromDatabase(table.id)
+        CRAFTING_TABLES[table.id] = nil
+        TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'delete', CRAFTING_TABLES, table.id)
         return true
     else
         return false 
@@ -79,24 +92,34 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, itemN
     return item.name
 end)
 
-stevo_lib.RegisterUsableItem(Config.craftingTable.item, function(source)
-    TriggerClientEvent('stevo_portable_crafting', source)
-end)
+
 
 CreateThread(function()
-    if Config.saveToDatabase then 
+    if config.saveToDatabase then 
         local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM stevo_portable_crafting')
 
         if not success then
             MySQL.query([[CREATE TABLE IF NOT EXISTS `stevo_portable_crafting` (
                 `tableid` INT NOT NULL,
+                `tabletype` TEXT NOT NULL,
                 `owner` VARCHAR(50) NOT NULL,
                 `name` VARCHAR(50) NOT NULL,
                 `coords` TEXT NOT NULL,
-                `heading` FLOAT NOT NULL,
+                `heading` TEXT NOT NULL,
                 PRIMARY KEY (`tableid`)
             )]])
-            print('[Stevo Scripts] Deployed database table for stevo_portable_crafting')
+            lib.print.info('[Stevo Scripts] '..locale('altered_database'))
+        else
+            local columnExists = MySQL.scalar.await([[
+                SELECT COUNT(*) FROM information_schema.COLUMNS 
+                WHERE TABLE_NAME = 'stevo_portable_crafting' 
+                AND COLUMN_NAME = 'tabletype'
+            ]])
+
+            if columnExists == 0 then
+                MySQL.query('ALTER TABLE `stevo_portable_crafting` ADD COLUMN `tabletype` TEXT NOT NULL')
+                lib.print.info('[Stevo Scripts] '..locale('altered_database'))
+            end
         end
 
         local tables = MySQL.query.await('SELECT * FROM `stevo_portable_crafting`', {})
@@ -104,17 +127,25 @@ CreateThread(function()
         if tables then
             for i = 1, #tables do
                 local row = tables[i]
+                local coords = json.decode(row.coords)
 
                 local table = {
                     id = row.tableid,
+                    type = row.tabletype,
                     name = row.name,
                     owner = row.owner,
-                    coords = json.decode(row.coords),
-                    heading = row.heading,
+                    coords = vec3(coords.x, coords.y, coords.z),
+                    heading = json.decode(row.heading),
                 }
 
                 CRAFTING_TABLES[table.id] = table
             end
         end
+    end
+
+    for tabletype, table in pairs(config.craftingTables) do
+        stevo_lib.RegisterUsableItem(tabletype, function(source)
+            TriggerClientEvent('stevo_portable_crafting', source, tabletype)
+        end)
     end
 end)

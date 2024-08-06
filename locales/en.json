@@ -1,0 +1,21 @@
+{
+    "no_placing_in_vehicle": "You cannot place items while in a vehicle",
+    "placed_crafting_table": "Placed crafting table",
+    "pickedup_crafting_table": "Picked up crafting table",
+    "failed_to_pickup_crafting_table": "Failed to pickup crafting table",
+    "craftable_required_items": "Required Items",
+    "no_blueprint": "You are missing %s",
+    "missing_required_items": "You are missing required items!",
+    "crafted_item": "Successfully crafted a %s",
+    
+    "name_crafting_table": "%s's Crafting Table",
+
+    "deployed_database": "Deployed database table for stevo_portable_crafting",
+    "altered_database": "Added column `tabletype` to stevo_portable_crafting",
+
+    "progress_picking_up_table": "Picking Up Crafting Table",
+    "progress_placing_table": "Placing Crafting Table",
+
+    "place_instructions": "[E] Place Table  \n[Scroll Up/Down] Rotate"
+
+}

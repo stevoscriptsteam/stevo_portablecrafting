@@ -1,0 +1,20 @@
+{
+    "no_placing_in_vehicle": "No puedes colocar objetos mientras estás en un vehículo.",
+    "placed_crafting_table": "Mesa de trabajo colocada",
+    "pickedup_crafting_table": "Mesa de trabajo recogida",
+    "failed_to_pickup_crafting_table": "No se pudo recoger la mesa de elaboración",
+    "craftable_required_items": "Objetos requeridos",
+    "no_blueprint": "Estás perdido %s",
+    "missing_required_items": "Te faltan elementos requeridos!",
+    "crafted_item": "Elaborado con éxito un %s",
+    
+    "name_crafting_table": "Mesa de trabajo de %s",
+
+    "deployed_database": "Tabla de base de datos implementada para stevo_portable_crafting",
+    "altered_database": "Se agregó la columna tabletype a stevo_portable_crafting",
+
+    "progress_picking_up_table": "Recogiendo la mesa de creación",
+    "progress_placing_table": "Colocando la mesa de creación",
+
+    "place_instructions": "[E] Colocar mesa \n[Desplazar arriba/abajo] Rotar"
+}

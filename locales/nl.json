@@ -1,0 +1,20 @@
+{
+    "no_placing_in_vehicle": "Je kunt geen voorwerpen plaatsen terwijl je in een voertuig zit.",
+    "placed_crafting_table": "Werktafel geplaatst",
+    "pickedup_crafting_table": "Werktafel opgepakt",
+    "failed_to_pickup_crafting_table": "Kon de werktafel niet oppakken",
+    "craftable_required_items": "Benodigde voorwerpen",
+    "no_blueprint": "Je mist %s",
+    "missing_required_items": "Je mist vereiste voorwerpen!",
+    "crafted_item": "Met succes een %s gemaakt",
+
+    "name_crafting_table": "%s's Werktafel",
+
+    "deployed_database": "Databasetabel geïmplementeerd voor stevo_portable_crafting",
+    "altered_database": "Kolom tabletype toegevoegd aan stevo_portable_crafting",
+
+    "progress_picking_up_table": "Het oppakken van de knutseltafel",
+    "progress_placing_table": "Het plaatsen van de knutseltafel",
+
+    "place_instructions": "[E] Tafel plaatsen \n[Scroll omhoog/omlaag] Draaien"
+}
