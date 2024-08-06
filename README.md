@@ -1,4 +1,4 @@
-## stevo_portablecrafting - 1.0.0
+## stevo_portablecrafting - 2.0.0
 Advanced Portable Crafting System with props, blueprints and more!
 
 - Highly Configurable
