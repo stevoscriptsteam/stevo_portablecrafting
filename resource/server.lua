@@ -65,7 +65,12 @@ lib.callback.register('stevo_portablecrafting:loadTables', function(source)
     return CRAFTING_TABLES
 end)
 
-lib.callback.register('stevo_portablecrafting:craftItem', function(source, itemName, item)
+lib.callback.register('stevo_portablecrafting:craftItem', function(source, tabletype, itemName, item)
+
+    if not config.craftingtables[tabletype].craftables[itemName] then 
+        return 
+    end
+
     if item.required_blueprint then 
         local hasItem = stevo_lib.HasItem(source, item.required_blueprint)
         if hasItem < 1 then 

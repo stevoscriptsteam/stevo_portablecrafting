@@ -86,7 +86,7 @@ end
 
 function craftItem(data)
     DeleteObject(CRAFTABLE_OBJ)
-    local craftItem = lib.callback.await('stevo_portablecrafting:craftItem', false, data.item, data.craftable)
+    local craftItem = lib.callback.await('stevo_portablecrafting:craftItem', false, data.tabletype, data.item, data.craftable)
 
     if craftItem == 1 then 
 
@@ -186,7 +186,7 @@ function registerCraftables()
                 {
                     title = 'Craft',
                     arrow = true,
-                    args = {craftable = craftable, item = i},
+                    args = {tabletype = tabletype, craftable = craftable, item = i},
                     onSelect = craftItem
                 }
             }
