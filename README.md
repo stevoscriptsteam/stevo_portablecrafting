@@ -7,7 +7,7 @@ Advanced Portable Crafting System with props, blueprints and more!
 - :speaking_head:  Locales: English, Español & Dutch
 
   
-Follow our installation guide: [Click Here](https://docs.stevoscripts.com/free-scripts/stevo_portable Crafting)
+Follow our installation guide: [Click Here](https://docs.stevoscripts.com/free-scripts/stevo_portablecrafting)
 ﻿
 > **Dependencies:**
 > <br>
