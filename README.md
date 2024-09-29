@@ -21,5 +21,4 @@ Discord: https://discord.gg/stevoscripts
 
 
 # Featured Resource
-
-[https://youtu.be/rPl-2BZCk6g](https://github.com/user-attachments/assets/df1425d4-970f-462d-b748-c7c42fc71ce0)
+[https://github.com/user-attachments/assets/df1425d4-970f-462d-b748-c7c42fc71ce0](https://youtu.be/rPl-2BZCk6g)
