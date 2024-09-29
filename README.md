@@ -1,17 +1,25 @@
-## stevo_portablecrafting - 2.0.1
+## stevo_portablecrafting 🧰
 Advanced Portable Crafting System with props, blueprints and more!
 
-- Highly Configurable
-- 100% Optimized
-- Realistic
-- Supports all inventories!
-- Supports ESX, QBCore, Qbox
+- :bank: ﻿﻿﻿ Supported frameworks: ESX, QBCore & Qbox 
+﻿﻿﻿- :school_satchel:  Supported inventories: All! 
+- :eye:  Supported targets: ox, qb & interact
+- :speaking_head:  Locales: English, Español & Dutch
+
+  
+Follow our installation guide: [Click Here](https://docs.stevoscripts.com/free-scripts/stevo_portable Crafting)
+﻿
+> **Dependencies:**
+> <br>
+> **[stevo_lib 1.6.9](https://github.com/stevoscriptsteam/stevo_lib/releases/tag/1.6.8)**
+> <br>
+> **[ox_lib](https://github.com/overextended/ox_lib/releases/tag/v3.24.0)**
 
 Preview: [https://youtu.be/HErP1xbOyoY](https://youtu.be/F_ESW-rE8-M)
 <br>
-Documentation: https://docs.stevoscripts.com/free-scripts/stevo_portablecrafting
-<br>
 Discord: https://discord.gg/stevoscripts
-<br>
-Website: https://www.stevoscripts.com
 
+
+# Featured Resource
+
+[https://youtu.be/rPl-2BZCk6g](https://github.com/user-attachments/assets/df1425d4-970f-462d-b748-c7c42fc71ce0)
