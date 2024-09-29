@@ -1,20 +1,30 @@
 {
-    "no_placing_in_vehicle": "Je kunt geen voorwerpen plaatsen terwijl je in een voertuig zit.",
+    "no_placing_in_vehicle": "Je kunt geen items plaatsen terwijl je in een voertuig zit",
     "placed_crafting_table": "Werktafel geplaatst",
     "pickedup_crafting_table": "Werktafel opgepakt",
-    "failed_to_pickup_crafting_table": "Kon de werktafel niet oppakken",
-    "craftable_required_items": "Benodigde voorwerpen",
+    "failed_to_pickup_crafting_table": "Mislukt om werktafel op te pakken",
+    "craftable_requiredItems": "Benodigde Items",
     "no_blueprint": "Je mist %s",
-    "missing_required_items": "Je mist vereiste voorwerpen!",
-    "crafted_item": "Met succes een %s gemaakt",
+    "missing_requiredItems": "Je mist de benodigde items!",
+    "crafted_item": "Succesvol een %s gemaakt",
+    
+    "deployed_database": "Database tabel voor stevo_portable_crafting ingezet",
+    "altered_database": "Kolom `tabletype` toegevoegd aan stevo_portable_crafting",
 
-    "name_crafting_table": "%s's Werktafel",
+    "place_instructions": "[E] Tafel Plaatsen \n[Scroll Op/Neer] Draaien",
 
-    "deployed_database": "Databasetabel geïmplementeerd voor stevo_portable_crafting",
-    "altered_database": "Kolom tabletype toegevoegd aan stevo_portable_crafting",
+    "menu" : {
+        "permanent_table_header" : "Werktafel",
+        "table_header": "%s's Werktafel"
+    },
 
-    "progress_picking_up_table": "Het oppakken van de knutseltafel",
-    "progress_placing_table": "Het plaatsen van de knutseltafel",
+    "progress" : {
+        "picking_up_table": "Werktafel oppakken",
+        "placing_table": "Werktafel plaatsen"
+    },
 
-    "place_instructions": "[E] Tafel plaatsen \n[Scroll omhoog/omlaag] Draaien"
+    "dialog" : {
+        "amount_title" : "Hoeveel wil je maken?",
+        "amount_label": "Aantal Maken"
+    }
 }

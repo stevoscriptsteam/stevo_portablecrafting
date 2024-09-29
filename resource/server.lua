@@ -1,8 +1,11 @@
+if not lib.checkDependency('stevo_lib', '1.6.9') then error('stevo_lib 1.6.9 required for stevo_portablecrafting') end
+lib.versionCheck('stevoscriptsteam/stevo_portablecrafting')
+lib.locale()
+
 local config = lib.require('config')
 local stevo_lib = exports['stevo_lib']:import()
 local CRAFTING_TABLES = {}
 
-lib.locale()
 
 local function saveTableToDatabase(table)
     if config.saveToDatabase then 
@@ -27,7 +30,6 @@ local function generateUniqueTableId()
 end
 
 
-
 lib.callback.register('stevo_portablecrafting:createTable', function(source, coords, heading, tabletype)
     local identifier = stevo_lib.GetIdentifier(source)
     local name = stevo_lib.GetName(source)
@@ -35,12 +37,13 @@ lib.callback.register('stevo_portablecrafting:createTable', function(source, coo
     stevo_lib.RemoveItem(source, tabletype, 1)
 
     local table = {
-        name = locale('name_crafting_table', name),
+        name = locale('menu.crafting_table_header', name),
         type = tabletype,
         owner = identifier,
         coords = coords,
         heading = heading,
         id = generateUniqueTableId(),
+        permanent = false
     }
 
     CRAFTING_TABLES[table.id] = table
@@ -65,7 +68,7 @@ lib.callback.register('stevo_portablecrafting:loadTables', function(source)
     return CRAFTING_TABLES
 end)
 
-lib.callback.register('stevo_portablecrafting:craftItem', function(source, tabletype, itemName, item)
+lib.callback.register('stevo_portablecrafting:craftItem', function(source, tabletype, itemName, item, amount)
 
     if not config.craftingTables[tabletype].craftables[itemName] then 
         return 
@@ -73,17 +76,31 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, table
 
     local item = config.craftingTables[tabletype].craftables[itemName]
 
-    if item.required_blueprint then 
-        local hasItem = stevo_lib.HasItem(source, item.required_blueprint)
+    if amount > 1 and not item.craftMultiple then 
+        local name = GetPlayerName(source)
+        local identifier = stevo_lib.GetIdentifier(source)
+
+        lib.print.info(('User: %s (%s) tried to exploit stevo_portablecrafting'):format(name, identifier))
+
+        if config.dropCheaters then 
+            DropPlayer(source, 'Trying to exploit stevo_portablecrafting')
+        end
+
+        return false
+    end
+
+    if item.blueprintRequired then 
+        local hasItem = stevo_lib.HasItem(source, item.blueprintRequired)
         if hasItem < 1 then 
             return 1
         end
     end
 
     local hasItems = true 
-    for i, item in pairs(item.required_items) do 
+    for i, item in pairs(item.requiredItems) do 
         local hasItem = stevo_lib.HasItem(source, item.item)
-        if hasItem < item.amount then 
+        local required = item.amount*amount
+        if hasItem < required then 
             hasItems = false 
             break 
         end
@@ -91,15 +108,14 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, table
 
     if not hasItems then return 2 end
 
-    for i, item in pairs(item.required_items) do 
-        stevo_lib.RemoveItem(source, item.item, item.amount)
+    for i, item in pairs(item.requiredItems) do 
+        local newAmount = item.amount*amount
+        stevo_lib.RemoveItem(source, item.item, newAmount)
     end
     
-    stevo_lib.AddItem(source, itemName, 1)
+    stevo_lib.AddItem(source, itemName, amount)
     return item.name
 end)
-
-
 
 CreateThread(function()
     if config.saveToDatabase then 
@@ -143,6 +159,24 @@ CreateThread(function()
                     owner = row.owner,
                     coords = vec3(coords.x, coords.y, coords.z),
                     heading = json.decode(row.heading),
+                    permanent = false
+                }
+
+                CRAFTING_TABLES[table.id] = table
+            end
+        end
+
+        if config.permCraftingTables then
+            for type, coords in pairs(config.permCraftingTables) do
+
+                local table = {
+                    id = generateUniqueTableId(),
+                    type = type,
+                    name = locale("menu.permanent_table_header"),
+                    owner = false,
+                    coords = vec3(coords.x, coords.y, coords.z),
+                    heading = coords.w,
+                    permanent = true
                 }
 
                 CRAFTING_TABLES[table.id] = table

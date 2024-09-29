@@ -1,18 +1,19 @@
+if not lib.checkDependency('stevo_lib', '1.6.9') then error('stevo_lib 1.6.9 required for stevo_portablecrafting') end
+lib.locale()
+
+
 local config = lib.require('config')
 local stevo_lib = exports['stevo_lib']:import()
-
 local PLACING_TABLE = false
 local TABLE_POINTS = {}
 local CURRENT_TABLE, CRAFTING_OPTIONS, TABLE_CAM, CRAFTABLE_OBJ
-
-lib.locale()
 
 local function createTable(object, coords, heading, tabletype)
     DeleteObject(object)
 
     lib.progressBar({
         duration = 1000,
-        label = locale('progress_placing_table'),
+        label = locale('progress.placing_table'),
         useWhileDead = false,
         canCancel = false,
         disable = {
@@ -85,14 +86,25 @@ local function placeTable(tabletype)
 end
 
 function craftItem(data)
+    local craftAmount = 1
+
     DeleteObject(CRAFTABLE_OBJ)
-    local craftItem = lib.callback.await('stevo_portablecrafting:craftItem', false, data.tabletype, data.item, data.craftable)
+
+    if data.craftable.craftMultiple then 
+        local input = lib.inputDialog(locale("dialog.amount_title"), {
+            {type = 'slider', label = locale("dialog.amount_label"), required = true, min = data.craftable.craftMin, max = data.craftable.craftMax},
+        })
+        if not input then stevo_lib.Notify('Cancelled Input', 'info', 3000) return lib.showContext('stevo_portablecrafting') end
+        
+        craftAmount = input[1]
+    end
+    local craftItem = lib.callback.await('stevo_portablecrafting:craftItem', false, data.tabletype, data.item, data.craftable, craftAmount)
 
     if craftItem == 1 then 
 
-        stevo_lib.Notify(locale('no_blueprint', data.craftable.required_blueprint_label), 'error', 5000)
+        stevo_lib.Notify(locale('no_blueprint', data.craftable.blueprintRequired_label), 'error', 5000)
     elseif craftItem == 2 then 
-        stevo_lib.Notify(locale('missing_required_items'), 'error', 5000)
+        stevo_lib.Notify(locale('missing_requiredItems'), 'error', 5000)
     else
         stevo_lib.Notify(locale('crafted_item', craftItem), 'info', 5000)
     end
@@ -105,7 +117,7 @@ function pickupTable(entity)
     
     lib.progressBar({
         duration = 1000,
-        label = locale('progress_picking_up_table'),
+        label = locale('progress.picking_up_table'),
         useWhileDead = false,
         canCancel = false,
         disable = {
@@ -173,13 +185,13 @@ function registerCraftables()
             table.insert(options[tabletype], option)
     
             local requiredItems = {}
-            for _, item in ipairs(craftable.required_items) do
+            for _, item in ipairs(craftable.requiredItems) do
                 table.insert(requiredItems, item.amount .. 'x ' .. item.label)
             end
     
             local secondaryOptions = { 
                 {
-                    title = locale('craftable_required_items'),
+                    title = locale('craftable_requiredItems'),
                     icon = 'info-circle',
                     description = table.concat(requiredItems, ', '),
                 },
@@ -191,9 +203,9 @@ function registerCraftables()
                 }
             }
             
-            if craftable.required_blueprint then 
+            if craftable.blueprintRequired then 
                 local blueprintOption = {
-                    title = craftable.required_blueprint_label,
+                    title = craftable.blueprintRequired_label,
                     icon = 'book',
                 }
                 table.insert(secondaryOptions, 1, blueprintOption)
@@ -235,13 +247,14 @@ function openCraftingMenu(entity)
 end
 
 function enterTablePoint(self)
+
     lib.requestModel(self.table_model)
     self.table = CreateObject(self.table_model, self.table_coords, true)
     SetEntityHeading(self.table, self.table_heading)
     FreezeEntityPosition(self.table, true)
 
     local options = {
-        options = {
+        options = not self.table_perm and {
             {
                 icon = config.interaction.targeticon,
                 label = config.interaction.targetLabel,
@@ -256,7 +269,15 @@ function enterTablePoint(self)
                 distance = config.interaction.targetdistance,
                 action = pickupTable,
             },
-        },
+        } or  {
+            {
+                icon = config.interaction.targeticon,
+                label = config.interaction.targetLabel,
+                distance = config.interaction.targetdistance,
+                num = 1,
+                action = openCraftingMenu,
+            }
+        }, 
         distance = 5,
         rotation = vec3(0.0,0.0, 0.0)
 
@@ -268,7 +289,7 @@ function enterTablePoint(self)
         name = self.table_name,
         coords = self.table_coords,
         id = self.table_id,
-        type = self.table_type,
+        type = self.table_type
     }
 end
  
@@ -293,12 +314,11 @@ function nearbyTablePoint(self)
 end
 
 
-function on_player_loaded()
+function onPlayerLoaded()
     CRAFTING_OPTIONS = registerCraftables()
     local tables = lib.callback.await('stevo_portablecrafting:loadTables', false)
     
     for i, table in pairs(tables) do 
-        print(table.coords)
         TABLE_POINTS[table.id] = lib.points.new({
             coords = table.coords,
             distance = 10,
@@ -308,6 +328,7 @@ function on_player_loaded()
             table_name = table.name,
             table_coords = table.coords,
             table_heading = table.heading,
+            table_perm = table.permanent,
             onEnter = enterTablePoint,
             onExit = exitTablePoint,
             nearby = nearbyTablePoint,
@@ -337,6 +358,7 @@ RegisterNetEvent('stevo_portablecrafting:networkSync', function(action, tables, 
             table_name = action_data.name,
             table_coords = vec3(action_data.coords.x, action_data.coords.y, action_data.coords.z),
             table_heading = action_data.heading,
+            table_perm = action_data.permanent,
             onEnter = enterTablePoint,
             onExit = exitTablePoint,
             debug = true,
@@ -345,24 +367,22 @@ RegisterNetEvent('stevo_portablecrafting:networkSync', function(action, tables, 
 end)
 
 AddEventHandler('stevo_lib:playerLoaded', function()
-    on_player_loaded()
+    onPlayerLoaded()
 end)
 
-AddEventHandler('onResourceStop', function(resourceName)
-    if (GetCurrentResourceName() ~= resourceName) then
-      return
-    end
+AddEventHandler('onResourceStop', function(resource)
+    if cache.resource ~= resource then return end
+
     for _, point in pairs(TABLE_POINTS) do
         TABLE_POINTS[_]:onExit()
         TABLE_POINTS[_]:remove()
     end
 end)
 
-AddEventHandler('onResourceStart', function(resourceName)
-    if (GetCurrentResourceName() ~= resourceName) then
-      return
-    end
-    on_player_loaded()
+AddEventHandler('onResourceStart', function(resource)
+    if cache.resource ~= resource then return end
+
+    onPlayerLoaded()
 end)
 
 
