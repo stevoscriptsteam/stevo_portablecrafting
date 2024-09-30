@@ -2,6 +2,7 @@
 Advanced Portable Crafting System with props, blueprints and more!
 
 - :bank: ﻿﻿﻿ Supported frameworks: ESX, QBCore & Qbox
+<br>
 ﻿﻿﻿- :school_satchel:  Supported inventories: All! 
 - :eye:  Supported targets: ox, qb & interact
 - :speaking_head:  Locales: English, Español & Dutch
