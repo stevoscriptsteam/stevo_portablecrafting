@@ -20,5 +20,5 @@ Preview: [https://youtu.be/HErP1xbOyoY](https://youtu.be/F_ESW-rE8-M)
 Discord: https://discord.gg/stevoscripts
 
 
-## Support us by checking out our Featured Resource 
+## Support us by checking out our Featured Paid Resource 
 [![FORUN](https://github.com/user-attachments/assets/0e03265d-0e8f-4a56-9b3d-9697100204ba)](https://store.stevoscripts.com/package/6448032)
