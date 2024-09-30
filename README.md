@@ -1,7 +1,7 @@
 ## stevo_portablecrafting 🧰
 Advanced Portable Crafting System with props, blueprints and more!
 
-- :bank: ﻿﻿﻿ Supported frameworks: ESX, QBCore & Qbox 
+- :bank: ﻿﻿﻿ Supported frameworks: ESX, QBCore & Qbox
 ﻿﻿﻿- :school_satchel:  Supported inventories: All! 
 - :eye:  Supported targets: ox, qb & interact
 - :speaking_head:  Locales: English, Español & Dutch
