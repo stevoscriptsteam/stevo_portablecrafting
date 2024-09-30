@@ -21,4 +21,4 @@ Discord: https://discord.gg/stevoscripts
 
 
 ## Support us by checking out our Featured Paid Resource 
-[![FORUN](https://github.com/user-attachments/assets/0e03265d-0e8f-4a56-9b3d-9697100204ba)](https://store.stevoscripts.com/package/6448032)
+[![FORUM](https://github.com/user-attachments/assets/64ea1a30-f5f3-40bb-9ba0-7e309ff67d90)](https://store.stevoscripts.com/package/6448032)
