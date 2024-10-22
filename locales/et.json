@@ -1,0 +1,30 @@
+{
+    "no_placing_in_vehicle": "Sõidukis olles ei saa te esemeid asetada",
+    "placed_crafting_table": "Meisterdamislaua paigutamine oli edukas!",
+    "pickedup_crafting_table": "Meisterdamislaua ülesse võtmine oli edukas!",
+    "failed_to_pickup_crafting_table": "Meisterdamislaua ülesvõtmine ebaõnnestus!",
+    "craftable_requiredItems": "Nõutavad esemed",
+    "no_blueprint": "Sa oled kadunud %s",
+    "missing_requiredItems": "Teil on midagi puudu!",
+    "crafted_item": "Meisterdasid edukalt %s",
+    
+    "deployed_database": "Deployed database table for stevo_portable_crafting",
+    "altered_database": "Added column `tabletype` to stevo_portable_crafting",
+
+    "place_instructions": "[E] Pane maha  \n[Scroll Up/Down] Liiguta",
+
+    "menu" : {
+        "permanent_table_header" : "Meisterdamislaud",
+        "table_header": "%s Meisterdamislaud"
+    },
+
+    "progress" : {
+        "picking_up_table": "Võtad ülesse meisterdamislauda",
+        "placing_table": "Asetad meisterdamislauda"
+    },
+
+    "dialog" : {
+        "amount_title" : "Kui palju soovite meisterdada?",
+        "amount_label": "Meisterdamis kogus"
+    }
+}
