@@ -1,9 +1,9 @@
-if not lib.checkDependency('stevo_lib', '1.6.9') then error('stevo_lib 1.6.9 required for stevo_portablecrafting') end
+if not lib.checkDependency('stevo_lib', '1.7.1') then error('stevo_lib 1.7.1 required for stevo_portablecrafting') end
 lib.locale()
-
 
 local config = lib.require('config')
 local stevo_lib = exports['stevo_lib']:import()
+local progress = config.progressCircle and lib.progressCircle or lib.progressBar
 local PLACING_TABLE = false
 local TABLE_POINTS = {}
 local CURRENT_TABLE, CRAFTING_OPTIONS, TABLE_CAM, CRAFTABLE_OBJ
@@ -13,7 +13,7 @@ local function createTable(object, coords, heading, tabletype)
 
     lib.progressBar({
         duration = 1000,
-        label = locale('progress.placing_table'),
+        label = locale('progress.placingTable'),
         useWhileDead = false,
         canCancel = false,
         disable = {
@@ -24,12 +24,12 @@ local function createTable(object, coords, heading, tabletype)
             dict = "pickup_object",
             clip = "pickup_low"
         },
-        prop = {
+        prop = config.pickupProp and {
             model = `prop_box_guncase_01a`,
             pos = vec3(0.12, 0.0, 0.0),
             rot = vec3(0.0, 0.0, 0.0),
             bone = 57005,
-        },
+        } or false,
     })
 
     
@@ -98,6 +98,20 @@ function craftItem(data)
         
         craftAmount = input[1]
     end
+
+    if data.craftable.timeToCraft then
+        if not progress({
+            duration = data.craftable.timeToCraft,
+            position = 'bottom',
+            label = (locale('progress.crafting'):format(data.craftable.name)),
+            useWhileDead = false,
+            canCancel = false,
+            disable = { move = true, car = true, mouse = false, combat = true, },
+        }) then    
+            return
+        end
+    end
+
     local craftItem = lib.callback.await('stevo_portablecrafting:craftItem', false, data.tabletype, data.item, data.craftable, craftAmount)
 
     if craftItem == 1 then 
@@ -336,12 +350,12 @@ function onPlayerLoaded()
     end
 end
 
-RegisterNetEvent('stevo_portable_crafting', function(tabletype)
-    if not IsPedInAnyVehicle(PlayerPedId(), true) then
-        placeTable(tabletype)
-    else
-        stevo_lib.Notify(locale('no_placing_in_vehicle'), 'error', 5000)
+RegisterNetEvent('stevo_portablecrafting:itemUsed', function(tabletype)
+    if IsPedInAnyVehicle(PlayerPedId(), true) then
+        return stevo_lib.Notify(locale('no_placing_in_vehicle'), 'error', 5000)
     end
+        
+    placeTable(tabletype)
 end)
 
 RegisterNetEvent('stevo_portablecrafting:networkSync', function(action, tables, action_data)
