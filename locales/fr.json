@@ -1,0 +1,42 @@
+{
+    "menu" : {
+        "permTableTitle" : "Table de Fabrication",
+        "tableTitle": "Table de Fabrication de %s",
+        "requiredItems" : "Objets Requis",
+        "craft" : "Fabriquer"
+    },
+
+    "textui" : {
+        "placeInstructions" : "[E] Placer la Table  \n[Défilement Haut/Bas] Pivoter"
+    },
+
+    "notify" : {
+        "alreadyPlacing" : "Vous êtes déjà en train de placer une table !",
+        "craftedItem" : "Vous avez fabriqué avec succès un %s",
+        "missingItems" : "Il vous manque des objets requis !",
+        "missingBlueprint" : "Il vous manque %s",
+        "pickedupTable" : "Table de fabrication ramassée",
+        "placedTable" : "Table de fabrication placée",
+        "failedPlace" : "Impossible de ramasser la table de fabrication",
+        "placeInVehicle" : "Vous ne pouvez pas placer d'objets dans un véhicule",
+        "denyJob" : "Vous n'avez pas le groupe requis pour cette table !",
+        "cancelledInput" : "Saisie Annulée",
+        "failedSkillCheck" : "Échec de la Fabrication"
+    },
+
+    "progress" : {
+        "picking_up_table": "Ramassage de la Table de Fabrication",
+        "placingTable": "Placement de la Table de Fabrication",
+        "craftingItem" : "Fabrication d'un %s"
+    },
+
+    "dialog" : {
+        "amountTitle" : "Combien voulez-vous fabriquer ?",
+        "amountLabel": "Quantité à Fabriquer"
+    },
+
+    "target" : {
+        "pickupCrafting" : "Ramasser la Table",
+        "openCrafting" : "Ouvrir la Fabrication"
+    }
+}
