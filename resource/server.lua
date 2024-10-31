@@ -1,10 +1,10 @@
-if not lib.checkDependency('stevo_lib', '1.6.9') then error('stevo_lib 1.6.9 required for stevo_portablecrafting') end
+if not lib.checkDependency('stevo_lib', '1.7.2') then error('stevo_lib 1.7.2 required for stevo_portablecrafting') end
 lib.versionCheck('stevoscriptsteam/stevo_portablecrafting')
 lib.locale()
 
 local config = lib.require('config')
 local stevo_lib = exports['stevo_lib']:import()
-local CRAFTING_TABLES = {}
+local CraftingTables = {}
 
 
 local function saveTableToDatabase(table)
@@ -25,7 +25,7 @@ local function generateUniqueTableId()
     local id
     repeat
         id = math.random(100000, 999999)
-    until not CRAFTING_TABLES[id] 
+    until not CraftingTables[id] 
     return id
 end
 
@@ -37,7 +37,7 @@ lib.callback.register('stevo_portablecrafting:createTable', function(source, coo
     stevo_lib.RemoveItem(source, tabletype, 1)
 
     local table = {
-        name = locale('menu.crafting_table_header', name),
+        name = locale('menu.tableTitle', name),
         type = tabletype,
         owner = identifier,
         coords = coords,
@@ -46,18 +46,19 @@ lib.callback.register('stevo_portablecrafting:createTable', function(source, coo
         permanent = false
     }
 
-    CRAFTING_TABLES[table.id] = table
+    CraftingTables[table.id] = table
     saveTableToDatabase(table)
 
-    TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'create', CRAFTING_TABLES, table)
+    TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'create', table.id, table)
 end)
 
-lib.callback.register('stevo_portablecrafting:pickupTable', function(source, table)
-    if CRAFTING_TABLES[table.id] ~= nil then 
-        stevo_lib.AddItem(source, table.type, 1)
-        deleteTableFromDatabase(table.id)
-        CRAFTING_TABLES[table.id] = nil
-        TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'delete', CRAFTING_TABLES, table.id)
+lib.callback.register('stevo_portablecrafting:pickupTable', function(source, tableId, tableType)
+    if CraftingTables[tableId] ~= nil then 
+        stevo_lib.AddItem(source, tableType, 1)
+        deleteTableFromDatabase(tableId)
+        CraftingTables[tableId] = nil
+
+        TriggerClientEvent('stevo_portablecrafting:networkSync', -1, 'delete', tableId, false)
         return true
     else
         return false 
@@ -65,16 +66,16 @@ lib.callback.register('stevo_portablecrafting:pickupTable', function(source, tab
 end)
 
 lib.callback.register('stevo_portablecrafting:loadTables', function(source)
-    return CRAFTING_TABLES
+    return CraftingTables
 end)
 
-lib.callback.register('stevo_portablecrafting:craftItem', function(source, tabletype, itemName, item, amount)
+lib.callback.register('stevo_portablecrafting:craftItem', function(source, itemName, amount, table)
 
-    if not config.craftingTables[tabletype].craftables[itemName] then 
-        return 
+    if not config.craftingTables[table.type].craftables[itemName] then 
+        return locale('notify.missingItems'), 'error'
     end
 
-    local item = config.craftingTables[tabletype].craftables[itemName]
+    local item = config.craftingTables[table.type].craftables[itemName]
 
     if amount > 1 and not item.craftMultiple then 
         local name = GetPlayerName(source)
@@ -86,13 +87,14 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, table
             DropPlayer(source, 'Trying to exploit stevo_portablecrafting')
         end
 
-        return false
+        return locale('notify.missingItems'), 'error'
     end
 
     if item.blueprintRequired then 
         local hasItem = stevo_lib.HasItem(source, item.blueprintRequired)
-        if hasItem < 1 then 
-            return 1
+
+        if not hasItem or hasItem < 1 then 
+            return locale('notify.missingBlueprint', item.blueprintRequired_label), 'error'
         end
     end
 
@@ -106,7 +108,7 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, table
         end
     end
 
-    if not hasItems then return 2 end
+    if not hasItems then return locale('notify.missingItems'), 'error' end
 
     for i, item in pairs(item.requiredItems) do 
         local newAmount = item.amount*amount
@@ -114,12 +116,12 @@ lib.callback.register('stevo_portablecrafting:craftItem', function(source, table
     end
     
     stevo_lib.AddItem(source, itemName, amount)
-    return item.name
+    return locale('notify.craftedItem', item.name), 'success'
 end)
 
 CreateThread(function()
     if config.saveToDatabase then 
-        local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM stevo_portable_crafting')
+        local success, _ = pcall(MySQL.scalar.await, 'SELECT 1 FROM stevo_portable_crafting')
 
         if not success then
             MySQL.query([[CREATE TABLE IF NOT EXISTS `stevo_portable_crafting` (
@@ -131,18 +133,7 @@ CreateThread(function()
                 `heading` TEXT NOT NULL,
                 PRIMARY KEY (`tableid`)
             )]])
-            lib.print.info('[Stevo Scripts] '..locale('altered_database'))
-        else
-            local columnExists = MySQL.scalar.await([[
-                SELECT COUNT(*) FROM information_schema.COLUMNS 
-                WHERE TABLE_NAME = 'stevo_portable_crafting' 
-                AND COLUMN_NAME = 'tabletype'
-            ]])
-
-            if columnExists == 0 then
-                MySQL.query('ALTER TABLE `stevo_portable_crafting` ADD COLUMN `tabletype` TEXT NOT NULL')
-                lib.print.info('[Stevo Scripts] '..locale('altered_database'))
-            end
+            lib.print.info('[Stevo Scripts] Added column `tabletype` to stevo_portable_crafting')
         end
 
         local tables = MySQL.query.await('SELECT * FROM `stevo_portable_crafting`', {})
@@ -151,42 +142,46 @@ CreateThread(function()
             for i = 1, #tables do
                 local row = tables[i]
                 local coords = json.decode(row.coords)
+                local heading = json.decode(row.heading)
+                local groups = config.craftingTables[row.tabletype].groups
 
                 local table = {
                     id = row.tableid,
                     type = row.tabletype,
                     name = row.name,
                     owner = row.owner,
+                    groups = groups,
                     coords = vec3(coords.x, coords.y, coords.z),
-                    heading = json.decode(row.heading),
+                    heading = heading,
                     permanent = false
                 }
 
-                CRAFTING_TABLES[table.id] = table
+                CraftingTables[table.id] = table
             end
         end
 
         if config.permCraftingTables then
-            for type, coords in pairs(config.permCraftingTables) do
+            for _, permTable in pairs(config.permCraftingTables) do
 
                 local table = {
                     id = generateUniqueTableId(),
-                    type = type,
-                    name = locale("menu.permanent_table_header"),
+                    type = permTable.type,
+                    name = locale("menu.permTableTitle"),
                     owner = false,
-                    coords = vec3(coords.x, coords.y, coords.z),
-                    heading = coords.w,
+                    groups = permTable.groups,
+                    coords = vec3(permTable.coords.x, permTable.coords.y, permTable.coords.z),
+                    heading = permTable.coords.w,
                     permanent = true
                 }
 
-                CRAFTING_TABLES[table.id] = table
+                CraftingTables[table.id] = table
             end
         end
     end
 
     for tabletype, table in pairs(config.craftingTables) do
         stevo_lib.RegisterUsableItem(tabletype, function(source)
-            TriggerClientEvent('stevo_portable_crafting', source, tabletype)
+            TriggerClientEvent('stevo_portablecrafting:itemUsed', source, tabletype)
         end)
     end
 end)
