@@ -132,7 +132,7 @@ end
 local function pickupTable(tableId, tableType)
 
     
-    lib.progressBar({
+    progress({
         duration = 1000,
         label = locale('progress.picking_up_table'),
         useWhileDead = false,
