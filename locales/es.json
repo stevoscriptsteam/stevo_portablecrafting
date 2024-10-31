@@ -1,30 +1,42 @@
 {
-    "no_placing_in_vehicle": "No puedes colocar objetos mientras estás en un vehículo",
-    "placed_crafting_table": "Mesa de crafteo colocada",
-    "pickedup_crafting_table": "Mesa de crafteo recogida",
-    "failed_to_pickup_crafting_table": "Error al recoger la mesa de crafteo",
-    "craftable_requiredItems": "Objetos Requeridos",
-    "no_blueprint": "Te falta %s",
-    "missing_requiredItems": "¡Te faltan los objetos requeridos!",
-    "crafted_item": "Has creado con éxito un %s",
-    
-    "deployed_database": "Tabla de base de datos implementada para stevo_portable_crafting",
-    "altered_database": "Se añadió la columna `tabletype` a stevo_portable_crafting",
-
-    "place_instructions": "[E] Colocar Mesa \n[Desplazar Arriba/Abajo] Rotar",
-
     "menu" : {
-        "permanent_table_header" : "Mesa de Crafteo",
-        "table_header": "Mesa de Crafteo de %s"
+        "permTableTitle" : "Mesa de Creación",
+        "tableTitle": "Mesa de Creación de %s",
+        "requiredItems" : "Objetos Requeridos",
+        "craft" : "Crear"
+    },
+
+    "textui" : {
+        "placeInstructions" : "[E] Colocar Mesa  \n[Scroll Arriba/Abajo] Rotar"
+    },
+
+    "notify" : {
+        "alreadyPlacing" : "¡Ya estás colocando una mesa!",
+        "craftedItem" : "Has creado exitosamente un %s",
+        "missingItems" : "¡Te faltan objetos requeridos!",
+        "missingBlueprint" : "Te falta %s",
+        "pickedupTable" : "Mesa de creación recogida",
+        "placedTable" : "Mesa de creación colocada",
+        "failedPlace" : "Error al recoger la mesa de creación",
+        "placeInVehicle" : "No puedes colocar objetos mientras estás en un vehículo",
+        "denyJob" : "¡No tienes el grupo requerido para esta mesa!",
+        "cancelledInput" : "Entrada Cancelada",
+        "failedSkillCheck" : "Fallo en la Creación"
     },
 
     "progress" : {
-        "picking_up_table": "Recogiendo Mesa de Crafteo",
-        "placing_table": "Colocando Mesa de Crafteo"
+        "picking_up_table": "Recogiendo Mesa de Creación",
+        "placingTable": "Colocando Mesa de Creación",
+        "craftingItem" : "Creando un %s"
     },
 
     "dialog" : {
-        "amount_title" : "¿Cuántos quieres craftear?",
-        "amount_label": "Cantidad a Craftear"
+        "amountTitle" : "¿Cuántos quieres crear?",
+        "amountLabel": "Cantidad a Crear"
+    },
+
+    "target" : {
+        "pickupCrafting" : "Recoger Mesa",
+        "openCrafting" : "Abrir Creación"
     }
 }
