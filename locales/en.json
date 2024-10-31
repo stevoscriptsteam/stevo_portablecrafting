@@ -1,31 +1,45 @@
 {
-    "no_placing_in_vehicle": "You cannot place items while in a vehicle",
-    "placed_crafting_table": "Placed crafting table",
-    "pickedup_crafting_table": "Picked up crafting table",
-    "failed_to_pickup_crafting_table": "Failed to pickup crafting table",
-    "craftable_requiredItems": "Required Items",
-    "no_blueprint": "You are missing %s",
-    "missing_requiredItems": "You are missing required items!",
-    "crafted_item": "Successfully crafted a %s",
-    
-    "deployed_database": "Deployed database table for stevo_portable_crafting",
-    "altered_database": "Added column `tabletype` to stevo_portable_crafting",
 
-    "place_instructions": "[E] Place Table  \n[Scroll Up/Down] Rotate",
 
     "menu" : {
-        "permanent_table_header" : "Crafting Table",
-        "table_header": "%s's Crafting Table"
+        "permTableTitle" : "Crafting Table",
+        "tableTitle": "%s's Crafting Table",
+        "requiredItems" : "Required Items",
+        "craft" : "Craft"
+    },
+
+    "textui" : {
+        "placeInstructions" : "[E] Place Table  \n[Scroll Up/Down] Rotate"
+    },
+
+    "notify" : {
+        "alreadyPlacing" : "Already placing a table!",
+        "craftedItem" : "Successfully crafted a %s",
+        "missingItems" : "You are missing required items!",
+        "missingBlueprint" : "You are missing %s",
+        "pickedupTable" : "Picked up crafting table",
+        "placedTable" : "Placed crafting table",
+        "failedPlace" : "Failed to pickup crafting table",
+        "placeInVehicle" : "You cannot place items while in a vehicle",
+        "denyJob" : "You do not have the group required for this table!",
+        "cancelledInput" : "Cancelled Input",
+        "failedSkillCheck" : "Failed Craft"
     },
 
     "progress" : {
         "picking_up_table": "Picking Up Crafting Table",
-        "placing_table": "Placing Crafting Table"
+        "placingTable": "Placing Crafting Table",
+        "craftingItem" : "Crafting a %s"
     },
 
     "dialog" : {
-        "amount_title" : "How many do you want to craft?",
-        "amount_label": "Craft Amount"
+        "amountTitle" : "How many do you want to craft?",
+        "amountLabel": "Craft Amount"
+    },
+
+    "target" : {
+        "pickupCrafting" : "Pickup Table",
+        "openCrafting" : "Open Crafting"
     }
 
 }
